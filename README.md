@@ -10,9 +10,9 @@ Deux utilisateurs manipulent les vidéoprojecteurs :
 Pour mieux fonctionner, veillez suivre les étapes suivantes : 
 
 1 - Ouvrir le fichier ./utils.txt, il contient une seule ligne sou le format xxxx-zzz.zzz.zzz.zzz-yyy.yyy.yyy.yyy, avec \newline
-      xxxx mot de passe de l'administrateur\newline
-      zzz.zzz.zzz.zzz l'adresse IP du premier videoprojecteur\newline
-      yyy.yyy.yyy.yyy l'adresse du second vidéoprojecteur\newline
+      xxxx mot de passe de l'administrateur<br />
+      zzz.zzz.zzz.zzz l'adresse IP du premier videoprojecteur<br />
+      yyy.yyy.yyy.yyy l'adresse du second vidéoprojecteur<br />
       
 2 - Lancer la télécommande. Celle-ci va tenter une connexion avec chaque videoprojecteur et ce à tout momemnt même si on perd la connexion,
       la télécommande est capable de détecter une nouvelle connexion
