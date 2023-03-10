@@ -399,7 +399,7 @@ void Remote::onConnexionStatusChanged_2()
         is_connected_2 = true;
         powerState_2 = true;
         ui->lbl_connected_2->setText("Connected");
-        ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_2->setStyleSheet("color:green; font-size:25px;");
     }
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
 }
