@@ -255,12 +255,12 @@ void Remote::changeBrightness(int remote)
             socketStream_1 << byteArray_1;
         }
     }else{
-        ui->lbl_sl_1->setText(QString::number(val));
+        ui->lbl_sl_2->setText(QString::number(val));
         if(tcpSocket_2->isOpen())
         {
             // On envoie la commande
             byteArray_2 = active_commandData.toUtf8();
-            socketStream_2 << byteArray_1;
+            socketStream_2 << byteArray_2;
         }
     }
 }
