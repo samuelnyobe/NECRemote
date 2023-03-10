@@ -32,3 +32,7 @@ Résultats\newline
 
 ![alt text](https://github.com/samuelnyobe/NECRemote/blob/master/img/remote1.png?raw=true)
 
+![alt text](https://github.com/samuelnyobe/NECRemote/blob/master/img/remote2.png?raw=true)
+
+![alt text](https://github.com/samuelnyobe/NECRemote/blob/master/img/remote3.png?raw=true)
+
