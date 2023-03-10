@@ -30,4 +30,4 @@ Pour mieux fonctionner, veillez suivre les étapes suivantes :
 
 Résultats\newline
 
-![alt text](https://github.com/[samuelnyobe]/[NECRemote]/blob/[master]/img/rmote1.png?raw=true)
+![alt text](https://github.com/samuelnyobe/NECRemote/blob/master/img/rmote1.png?raw=true)
