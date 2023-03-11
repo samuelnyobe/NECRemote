@@ -68,9 +68,9 @@ Remote::Remote(QWidget *parent)
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
 
     socketStream_1.setDevice(tcpSocket_1);
-//    socketStream_1.setVersion(QDataStream::Qt_6_4);
+    //    socketStream_1.setVersion(QDataStream::Qt_6_4);
     socketStream_2.setDevice(tcpSocket_2);
-//    socketStream_2.setVersion(QDataStream::Qt_6_4);
+    //    socketStream_2.setVersion(QDataStream::Qt_6_4);
 
     connectThread = new ConnectThread(this, is_connected_1, is_connected_2, host_1, host_2);
     connectThread->start();
@@ -119,7 +119,7 @@ Remote::Remote(QWidget *parent)
     connect(ui->sl_1, &QSlider::valueChanged, this, [=](){Remote::changeBrightness(1);});
     connect(ui->sl_2, &QSlider::valueChanged, this, [=](){Remote::changeBrightness(2);});
     connect(ui->btn_on_1, &QPushButton::clicked, this, [=](){Remote::onOff(1);});
-    connect(ui->btn_on_1, &QPushButton::clicked, this, [=](){Remote::onOff(2);});
+    connect(ui->btn_on_2, &QPushButton::clicked, this, [=](){Remote::onOff(2);});
 
 }
 
@@ -210,22 +210,26 @@ void Remote::saveConfigs()
 void Remote::onOff(int remote)
 {
     if(remote == 1){
-        active_commandData = powerState_1?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
-        powerState_1 = !powerState_1;
-        if(tcpSocket_1->isOpen())
-        {
-            // On envoie la commande
-            byteArray_1 = active_commandData.toUtf8();
-            socketStream_1 << byteArray_1;
+        if(is_connected_1){
+            if(tcpSocket_1->isOpen())
+            {
+
+                active_commandData = powerState_1?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
+                powerState_1 = !powerState_1;
+                byteArray_1 = active_commandData.toUtf8();
+                socketStream_1 << byteArray_1;
+            }
         }
     }else{
-        active_commandData = powerState_2?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
-        powerState_2= !powerState_2;
-        if(tcpSocket_2->isOpen())
-        {
-            // On envoie la commande
-            byteArray_2 = active_commandData.toUtf8();
-            socketStream_2 << byteArray_1;
+        if(is_connected_2){
+            if(tcpSocket_2->isOpen())
+            {
+                qDebug("Remote 2");
+                active_commandData = powerState_2?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
+                powerState_2= !powerState_2;
+                byteArray_2 = active_commandData.toUtf8();
+                socketStream_2 << byteArray_2;
+            }
         }
     }
 }
@@ -333,7 +337,7 @@ void Remote::changePort(QPushButton *btn, int remote, int port)
             {
                 if(btn != currentPortBtn_2){
                     currentPortBtn_2->setStyleSheet(orangeColor);
-                    currentPortBtn_2->setEnabled(true);
+                    currentCheckBox_2->setEnabled(true);
                     btn->setStyleSheet(greenColor);
                     currentPortBtn_2 = btn;
                     // On envoie la commande
