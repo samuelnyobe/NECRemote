@@ -16,7 +16,9 @@ Celui-ci a pour rôle de simuler le comportement d'un vidéoprojecteur, il affic
 
 COMPILATION : (Valable pour la télécommande et pour l'émulateur du vidéoprojecteur) <br />
 
-\$make clean<br /> \$qmake<br /> \$make<br />
+\$qmake6<br /> \$make<br />
+
+Ou alors ouvrir le fichier .pro à partir de Qt Creator et le compiler directement de là. La version de Qt utilisé est la version 6.
 
 OUVERTURE : <br />
 
