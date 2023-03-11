@@ -22,10 +22,10 @@ void ConnectThread::run()
 {
     QMutex mutex_1;
     QMutex mutex_2;
-    kill = false;
+    kill = false; // Cette variable est modifiée dans la classe principale pour arrêter le Thread normalement
 
     while (!kill) {
-        mutex_1.lock();
+        mutex_1.lock(); // On bloque avant de tester car la classe principale a accès à cette variable
         if(!is_connected_1){
             socket_1->deleteLater();
             socket_1 = new QTcpSocket();
@@ -55,6 +55,7 @@ void ConnectThread::run()
 
 ConnectThread::~ConnectThread()
 {
+    // On détruit proprement le Thread ce avant la classe principale
     quit();
 #if QT_VERSION >= QT_VERSION_CHECK(5,2,0)
     requestInterruption();

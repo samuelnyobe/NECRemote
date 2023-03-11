@@ -23,6 +23,8 @@ Remote::Remote(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // On commence par lire les infos du ficher pour récuper
+    // mot de passe, ip du vidéoprojecteur 1 et celle du second
     QFile f{":/utils.txt"};
     QString allDataFile = "";
     password = "7777";
@@ -39,6 +41,7 @@ Remote::Remote(QWidget *parent)
         }
     }
 
+    // On tente une première connexion sur le vidéoprojecteur 1
     tcpSocket_1->connectToHost(host_1, 7142);
     if(tcpSocket_1->waitForConnected(1000)){
         is_connected_1 = true;
@@ -48,11 +51,14 @@ Remote::Remote(QWidget *parent)
     }else{
         is_connected_1 = false;
         powerState_1 = false;
+        ui->sl_1->setEnabled(false);
         ui->lbl_connected_1->setText("Not Connected");
         ui->lbl_connected_1->setStyleSheet("color:red; font-size:25px;");
     }
+    // Si on est déconnecté soudainement, on bloque tout les bouttons
     connect(tcpSocket_1, &QTcpSocket::disconnected, this, &Remote::disconnected_1);
 
+    // On tente une première connexion sur le vidéoprojecteur 2
     tcpSocket_2->connectToHost(host_2, 7142);
     if(tcpSocket_2->waitForConnected(1000)){
         is_connected_2 = true;
@@ -62,39 +68,47 @@ Remote::Remote(QWidget *parent)
     }else{
         is_connected_2 = false;
         powerState_2 = false;
+        ui->sl_2->setEnabled(false);
         ui->lbl_connected_2->setText("Not Connected");
         ui->lbl_connected_2->setStyleSheet("color:red; font-size:25px;");
     }
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
 
+    // Toute donnée reçu à entrée sera redirigé sur la socket
     socketStream_1.setDevice(tcpSocket_1);
-//    socketStream_1.setVersion(QDataStream::Qt_6_4);
+    //    socketStream_1.setVersion(QDataStream::Qt_6_4);
     socketStream_2.setDevice(tcpSocket_2);
-//    socketStream_2.setVersion(QDataStream::Qt_6_4);
+    //    socketStream_2.setVersion(QDataStream::Qt_6_4);
 
+    // On crée le Thread qui va surveiller les connexions nouvelles si on est déconnecté
     connectThread = new ConnectThread(this, is_connected_1, is_connected_2, host_1, host_2);
     connectThread->start();
     connect(connectThread, &ConnectThread::connexionStatusChanged_1, this, &Remote::onConnexionStatusChanged_1);
     connect(connectThread, &ConnectThread::connexionStatusChanged_2, this, &Remote::onConnexionStatusChanged_2);
 
+    // Les bouttons et checkbox courrants
     currentPortBtn_1 = ui->pushButton_1;
     currentPortBtn_2 = ui->pushButton_10;
     currentCheckBox_1 = ui->checkBox_1;
     currentCheckBox_2 = ui->checkBox_10;
 
+    // On définit l'affichage de la luminausité à 50
     ui->lbl_sl_1->setText("50");
     ui->lbl_sl_2->setText("50");
 
-    ui->lineEdit->setValidator(new QIntValidator(1000, 9999, this));
+    // On contraint le mot de passe à être que de taille 4 chiffres
+    //    ui->lineEdit->setValidator(new QIntValidator(1000, 9999, this));
     QRegularExpression rx(R"(\d\d\d\d)");
     ui->lineEdit->setValidator(new QRegularExpressionValidator(rx, this));
 
+    // On souhaite que lorsque l'on tape sur le boutton Entrée, que cet évènement soit vu comme un clic
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), ui->frame_4);
     QObject::connect(shortcut, &QShortcut::activated, ui->bnt_validate, &QPushButton::click);
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &Remote::changeTab);
     connect(ui->bnt_validate, &QPushButton::clicked, this, &Remote::openAdminPage);
     connect(ui->btn_saveConfigs, &QPushButton::clicked, this, &Remote::saveConfigs);
 
+    // Les connect pour les boutton de changement de port
     connect(ui->pushButton_1, &QPushButton::clicked, this, [=](){Remote::changePort(ui->pushButton_1, 1, 1);});
     connect(ui->pushButton_2, &QPushButton::clicked, this, [=](){Remote::changePort(ui->pushButton_2, 1, 2);});
     connect(ui->pushButton_3, &QPushButton::clicked, this, [=](){Remote::changePort(ui->pushButton_3, 1, 3);});
@@ -119,7 +133,7 @@ Remote::Remote(QWidget *parent)
     connect(ui->sl_1, &QSlider::valueChanged, this, [=](){Remote::changeBrightness(1);});
     connect(ui->sl_2, &QSlider::valueChanged, this, [=](){Remote::changeBrightness(2);});
     connect(ui->btn_on_1, &QPushButton::clicked, this, [=](){Remote::onOff(1);});
-    connect(ui->btn_on_1, &QPushButton::clicked, this, [=](){Remote::onOff(2);});
+    connect(ui->btn_on_2, &QPushButton::clicked, this, [=](){Remote::onOff(2);});
 
 }
 
@@ -210,22 +224,25 @@ void Remote::saveConfigs()
 void Remote::onOff(int remote)
 {
     if(remote == 1){
-        active_commandData = powerState_1?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
-        powerState_1 = !powerState_1;
-        if(tcpSocket_1->isOpen())
-        {
-            // On envoie la commande
-            byteArray_1 = active_commandData.toUtf8();
-            socketStream_1 << byteArray_1;
+        if(is_connected_1){
+            if(tcpSocket_1->isOpen())
+            {
+
+                active_commandData = powerState_1?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
+                powerState_1 = !powerState_1;
+                byteArray_1 = active_commandData.toUtf8();
+                socketStream_1 << byteArray_1;
+            }
         }
     }else{
-        active_commandData = powerState_2?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
-        powerState_2= !powerState_2;
-        if(tcpSocket_2->isOpen())
-        {
-            // On envoie la commande
-            byteArray_2 = active_commandData.toUtf8();
-            socketStream_2 << byteArray_1;
+        if(is_connected_2){
+            if(tcpSocket_2->isOpen())
+            {
+                active_commandData = powerState_2?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
+                powerState_2= !powerState_2;
+                byteArray_2 = active_commandData.toUtf8();
+                socketStream_2 << byteArray_2;
+            }
         }
     }
 }
@@ -255,12 +272,12 @@ void Remote::changeBrightness(int remote)
             socketStream_1 << byteArray_1;
         }
     }else{
-        ui->lbl_sl_1->setText(QString::number(val));
+        ui->lbl_sl_2->setText(QString::number(val));
         if(tcpSocket_2->isOpen())
         {
             // On envoie la commande
             byteArray_2 = active_commandData.toUtf8();
-            socketStream_2 << byteArray_1;
+            socketStream_2 << byteArray_2;
         }
     }
 }
@@ -333,7 +350,7 @@ void Remote::changePort(QPushButton *btn, int remote, int port)
             {
                 if(btn != currentPortBtn_2){
                     currentPortBtn_2->setStyleSheet(orangeColor);
-                    currentPortBtn_2->setEnabled(true);
+                    currentCheckBox_2->setEnabled(true);
                     btn->setStyleSheet(greenColor);
                     currentPortBtn_2 = btn;
                     // On envoie la commande
@@ -353,6 +370,7 @@ void Remote::connected_1()
     ui->lbl_connected_1->setText("Connected");
     ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
     is_connected_1 = true;
+    ui->sl_1->setEnabled(true);
 }
 
 void Remote::disconnected_1()
@@ -360,6 +378,7 @@ void Remote::disconnected_1()
     ui->lbl_connected_1->setText("Not Connected");
     ui->lbl_connected_1->setStyleSheet("color:red; font-size:25px;");
     is_connected_1 = false;
+    ui->sl_1->setEnabled(false);
     connectThread->is_connected_1 = false;
 }
 
@@ -368,6 +387,7 @@ void Remote::connected_2()
     ui->lbl_connected_2->setText("Connected");
     ui->lbl_connected_2->setStyleSheet("color:green; font-size:25px;");
     is_connected_2 = true;
+    ui->sl_2->setEnabled(true);
 }
 
 void Remote::disconnected_2()
@@ -375,6 +395,7 @@ void Remote::disconnected_2()
     ui->lbl_connected_2->setText("Not Connected");
     ui->lbl_connected_2->setStyleSheet("color:red; font-size:25px;");
     is_connected_2 = false;
+    ui->sl_2->setEnabled(false);
     connectThread->is_connected_2 = false;
 }
 
@@ -385,6 +406,7 @@ void Remote::onConnexionStatusChanged_1()
     if(tcpSocket_1->waitForConnected()){
         is_connected_1 = true;
         powerState_1 = true;
+        ui->sl_1->setEnabled(true);
         ui->lbl_connected_1->setText("Connected");
         ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
     }
@@ -398,8 +420,9 @@ void Remote::onConnexionStatusChanged_2()
     if(tcpSocket_2->waitForConnected()){
         is_connected_2 = true;
         powerState_2 = true;
+        ui->sl_2->setEnabled(true);
         ui->lbl_connected_2->setText("Connected");
-        ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_2->setStyleSheet("color:green; font-size:25px;");
     }
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
 }
