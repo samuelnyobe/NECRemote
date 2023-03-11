@@ -5,6 +5,7 @@
         <file>On.png</file>
         <file>HDBaseT.png</file>
         <file>SDI.png</file>
+        <file>alert.png</file>
     </qresource>
     <qresource prefix="/">
         <file>utils.txt</file>

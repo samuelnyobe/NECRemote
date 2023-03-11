@@ -30,6 +30,19 @@ height:50px;
 width:50px;
 }
 
+QDialog #btn_on_1, #btn_on_2 {
+border-image: url(:/images/On.png);
+}
+
+QDialog #btn_alert , #btn_alert_1{
+border-image: url(:/images/alert.png);
+background-repeat: none;
+border-radius: 1px;
+}
+
+QDialog #label_52, #label_54 {
+color:red;
+}
 
 QDialog #pushButton_1, #pushButton_2, #pushButton_10, #pushButton_11 {
 border-image: url(:/images/HDMI.png);
@@ -240,8 +253,7 @@ QCheckBox::indicator:disabled
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/On.png);
-background-color: red;
+          <string notr="true">background-color:green;
 color :black;
 font-weight:bold;
 border: none;
@@ -688,6 +700,62 @@ border-radius: 18px;</string>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_11">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>231</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <item>
+           <widget class="QFrame" name="frame_7">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QWidget" name="horizontalLayoutWidget_13">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>-1</y>
+               <width>231</width>
+               <height>71</height>
+              </rect>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="1,2">
+              <item>
+               <widget class="QPushButton" name="btn_alert_1">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_54">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Power On first</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -1191,8 +1259,7 @@ border-radius: 18px;</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">border-image: url(:/images/On.png);
-background-color: red;
+          <string notr="true">background-color: green;
 color :black;
 font-weight:bold;
 border: none;
@@ -1227,6 +1294,62 @@ border-radius: 18px;</string>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_9">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>231</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QFrame" name="frame_5">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QWidget" name="horizontalLayoutWidget_10">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>-1</y>
+               <width>231</width>
+               <height>71</height>
+              </rect>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,2">
+              <item>
+               <widget class="QPushButton" name="btn_alert">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_52">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Power On first</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -1417,7 +1540,7 @@ text-align:center;
             <rect>
              <x>10</x>
              <y>40</y>
-             <width>341</width>
+             <width>398</width>
              <height>331</height>
             </rect>
            </property>
@@ -1770,7 +1893,7 @@ text-align:center;
             <rect>
              <x>10</x>
              <y>40</y>
-             <width>341</width>
+             <width>398</width>
              <height>331</height>
             </rect>
            </property>

@@ -58,13 +58,10 @@ public slots:
     void onOff(int remote); // Pour éteindre ou allumer un des vidéoprojecteurs
     void changeBrightness(int remote); // Pour changer la luminausité sur un des vidéoprojecteurs
     void changePort(QPushButton *btn, int remote, int port); //Pour changer de port sur un des vidéoprojecteurs
-    void connected_1(); // Traitement à effectuer quand on reçu une connexion sur le vidéoprojecteur 1
     void disconnected_1(); // Traitement à effectuer quand on reçu une déconnexion sur le vidéoprojecteur 1
-    void connected_2(); // Traitement à effectuer quand on reçu une connexion sur le vidéoprojecteur 2
     void disconnected_2(); // Traitement à effectuer quand on reçu une déconnexion sur le vidéoprojecteur 2
     void onConnexionStatusChanged_1(); // Si le Thread a envoyé un signal de nouvelle connexion détecté sur le vidéprojecteur 1
     void onConnexionStatusChanged_2(); // Si le Thread a envoyé un signal de nouvelle connexion détecté sur le vidéprojecteur 2
-
 
 private:
     Ui::Remote *ui;
