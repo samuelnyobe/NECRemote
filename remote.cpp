@@ -238,10 +238,6 @@ void Remote::onOff(int remote)
         if(is_connected_2){
             if(tcpSocket_2->isOpen())
             {
-<<<<<<< HEAD
-=======
-                qDebug("Remote 2");
->>>>>>> 25cfd79b85ccfdaf6dd58b488f9e7222b83ce878
                 active_commandData = powerState_2?"0x02 0x01 0x00 0x00 0x00 0x03":"0x02 0x00 0x00 0x00 0x00 0x02";
                 powerState_2= !powerState_2;
                 byteArray_2 = active_commandData.toUtf8();
