@@ -55,6 +55,9 @@ void ConnectThread::run()
 
 ConnectThread::~ConnectThread()
 {
+    socket_1->deleteLater();
+    socket_2->deleteLater();
+
     // On détruit proprement le Thread ce avant la classe principale
     quit();
 #if QT_VERSION >= QT_VERSION_CHECK(5,2,0)

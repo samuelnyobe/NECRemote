@@ -5,6 +5,7 @@
 #include <QRegularExpressionValidator>
 #include <QShortcut>
 #include <QFile>
+#include <QDebug>
 
 Remote::Remote(QWidget *parent)
     : QDialog(parent),
@@ -22,10 +23,31 @@ Remote::Remote(QWidget *parent)
     , ui(new Ui::Remote)
 {
     ui->setupUi(this);
+    setFixedSize(this->width(),this->height());
+    allBtn = {
+            ui->pushButton_1,
+            ui->pushButton_2,
+            ui->pushButton_3,
+            ui->pushButton_4,
+            ui->pushButton_5,
+            ui->pushButton_6,
+            ui->pushButton_7,
+            ui->pushButton_8,
+            ui->pushButton_9,
+            ui->pushButton_10,
+            ui->pushButton_11,
+            ui->pushButton_12,
+            ui->pushButton_13,
+            ui->pushButton_14,
+            ui->pushButton_15,
+            ui->pushButton_16,
+            ui->pushButton_17,
+            ui->pushButton_18
+        };
 
     // On commence par lire les infos du ficher pour récuper
     // mot de passe, ip du vidéoprojecteur 1 et celle du second
-    QFile f{":/utils.txt"};
+    QFile f{":./utils.txt"};
     QString allDataFile = "";
     password = "7777";
     if (f.exists()) {
@@ -48,14 +70,14 @@ Remote::Remote(QWidget *parent)
         ui->btn_on_1->setStyleSheet("background-color:red;");
         powerState_1 = true;
         ui->lbl_connected_1->setText("Connected");
-        ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_1->setStyleSheet("color:green; font-size:18px;");
     }else{
         is_connected_1 = false;
         ui->btn_on_1->setStyleSheet("background-color:green;");
         powerState_1 = false;
         ui->sl_1->setEnabled(false);
         ui->lbl_connected_1->setText("Not Connected");
-        ui->lbl_connected_1->setStyleSheet("color:red; font-size:25px;");
+        ui->lbl_connected_1->setStyleSheet("color:red; font-size:18px;");
     }
     // Si on est déconnecté soudainement, on bloque tout les bouttons
     connect(tcpSocket_1, &QTcpSocket::disconnected, this, &Remote::disconnected_1);
@@ -67,14 +89,14 @@ Remote::Remote(QWidget *parent)
         ui->btn_on_2->setStyleSheet("background-color:red;");
         powerState_2 = true;
         ui->lbl_connected_2->setText("Connected");
-        ui->lbl_connected_2->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_2->setStyleSheet("color:green; font-size:18px;");
     }else{
         is_connected_2 = false;
         ui->btn_on_2->setStyleSheet("background-color:green;");
         powerState_2 = false;
         ui->sl_2->setEnabled(false);
         ui->lbl_connected_2->setText("Not Connected");
-        ui->lbl_connected_2->setStyleSheet("color:red; font-size:25px;");
+        ui->lbl_connected_2->setStyleSheet("color:red; font-size:18px;");
     }
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
 
@@ -107,6 +129,7 @@ Remote::Remote(QWidget *parent)
     //    ui->lineEdit->setValidator(new QIntValidator(1000, 9999, this));
     QRegularExpression rx(R"(\d\d\d\d)");
     ui->lineEdit->setValidator(new QRegularExpressionValidator(rx, this));
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, &Remote::changeInputBorderColor);
 
     // On souhaite que lorsque l'on tape sur le boutton Entrée, que cet évènement soit vu comme un clic
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), ui->frame_4);
@@ -147,12 +170,15 @@ Remote::Remote(QWidget *parent)
 
 Remote::~Remote()
 {
-    if(tcpSocket_1->isOpen())
-        tcpSocket_1->close();
-    if(tcpSocket_2->isOpen())
-        tcpSocket_2->close();
 
     connectThread->kill = true;
+    delete currentPortBtn_1;
+    delete currentPortBtn_2;
+    delete currentCheckBox_1;
+    delete currentCheckBox_2;
+    delete tcpSocket_1;
+    delete tcpSocket_2;
+    delete connectThread;
 
     delete ui;
 }
@@ -173,7 +199,7 @@ void Remote::openAdminPage()
 
 void Remote::saveConfigs()
 {
-    QVector<bool> checksPort = {
+    checksPort = {
         ui->checkBox_1->isChecked(),
         ui->checkBox_2->isChecked(),
         ui->checkBox_3->isChecked(),
@@ -194,27 +220,7 @@ void Remote::saveConfigs()
         ui->checkBox_18->isChecked()
     };
 
-    QVector <QPushButton*> allBtn = {
-        ui->pushButton_1,
-        ui->pushButton_2,
-        ui->pushButton_3,
-        ui->pushButton_4,
-        ui->pushButton_5,
-        ui->pushButton_6,
-        ui->pushButton_7,
-        ui->pushButton_8,
-        ui->pushButton_9,
-        ui->pushButton_10,
-        ui->pushButton_11,
-        ui->pushButton_12,
-        ui->pushButton_13,
-        ui->pushButton_14,
-        ui->pushButton_15,
-        ui->pushButton_16,
-        ui->pushButton_17,
-        ui->pushButton_18,
 
-    };
     for (int i = 0; i < 18; ++i) {
         if(checksPort.at(i)){
             if(allBtn.at(i) != currentPortBtn_1 && allBtn.at(i) != currentPortBtn_2){
@@ -390,7 +396,7 @@ void Remote::changePort(QPushButton *btn, int remote, int port)
 void Remote::disconnected_1()
 {
     ui->lbl_connected_1->setText("Not Connected");
-    ui->lbl_connected_1->setStyleSheet("color:red; font-size:25px;");
+    ui->lbl_connected_1->setStyleSheet("color:red; font-size:18px;");
     is_connected_1 = false;
     powerState_1 = false;
     ui->frame_7->hide();
@@ -402,7 +408,7 @@ void Remote::disconnected_1()
 void Remote::disconnected_2()
 {
     ui->lbl_connected_2->setText("Not Connected");
-    ui->lbl_connected_2->setStyleSheet("color:red; font-size:25px;");
+    ui->lbl_connected_2->setStyleSheet("color:red; font-size:18px;");
     is_connected_2 = false;
     powerState_2 = false;
     ui->frame_5->hide();
@@ -422,7 +428,7 @@ void Remote::onConnexionStatusChanged_1()
         ui->sl_1->setEnabled(true);
         ui->frame_7->hide();
         ui->lbl_connected_1->setText("Connected");
-        ui->lbl_connected_1->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_1->setStyleSheet("color:green; font-size:18px;");
     }
     connect(tcpSocket_1, &QTcpSocket::disconnected, this, &Remote::disconnected_1);
 }
@@ -438,8 +444,49 @@ void Remote::onConnexionStatusChanged_2()
         ui->sl_2->setEnabled(true);
         ui->frame_5->hide();
         ui->lbl_connected_2->setText("Connected");
-        ui->lbl_connected_2->setStyleSheet("color:green; font-size:25px;");
+        ui->lbl_connected_2->setStyleSheet("color:green; font-size:18px;");
     }
     connect(tcpSocket_2, &QTcpSocket::disconnected, this, &Remote::disconnected_2);
+}
+
+void Remote::changeInputBorderColor()
+{
+    QString password = ui->lineEdit->text();
+    if(password.size() > 0){
+        ui->lineEdit->setStyleSheet("font-family: 'Poppins', sans-serif;"
+                                    "padding: 0px 10px ; "
+                                    "outline: none;"
+                                    "border:none;"
+                                    "border-bottom:2px solid rgb(46, 194, 126);"
+                                    "border-top-left-radius: 3px;"
+                                    "border-top-right-radius: 3px;"
+                                    "border-bottom-left-radius: 0px;"
+                                    "border-bottom-right-radius: 0px;"
+                                    "font-size: 15px;"
+                                    "font-weight: 400;"
+                                    "background-color:rgba(53, 53, 53, 0.8);"
+                                    "color: #fff;"
+                                    "letter-spacing:3px;"
+                                    "height:42px;");
+
+    }
+    else{
+        ui->lineEdit->setStyleSheet("font-family: 'Poppins', sans-serif;"
+                                    "padding: 0px 10px ; "
+                                    "outline: none;"
+                                    "border:none;"
+                                    "border-bottom:2px solid gray;"
+                                    "border-top-left-radius: 3px;"
+                                    "border-top-right-radius: 3px;"
+                                    "border-bottom-left-radius: 0px;"
+                                    "border-bottom-right-radius: 0px;"
+                                    "font-size: 15px;"
+                                    "font-weight: 400;"
+                                    "background-color:rgba(53, 53, 53, 0.8);"
+                                    "color: #fff;"
+                                    "letter-spacing:3px;"
+                                    "height:42px;");
+    }
+
 }
 

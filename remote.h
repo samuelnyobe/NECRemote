@@ -5,7 +5,6 @@
 #include <QTcpSocket>
 #include <QCheckBox>
 #include <QPushButton>
-
 #include <connectthread.h>
 
 QT_BEGIN_NAMESPACE
@@ -21,6 +20,8 @@ public:
     ~Remote();
 
 private:
+    QVector<bool> checksPort;
+    QVector <QPushButton*> allBtn;
     QString active_commandData;
 
     bool is_connected_1;
@@ -62,7 +63,7 @@ public slots:
     void disconnected_2(); // Traitement à effectuer quand on reçu une déconnexion sur le vidéoprojecteur 2
     void onConnexionStatusChanged_1(); // Si le Thread a envoyé un signal de nouvelle connexion détecté sur le vidéprojecteur 1
     void onConnexionStatusChanged_2(); // Si le Thread a envoyé un signal de nouvelle connexion détecté sur le vidéprojecteur 2
-
+    void changeInputBorderColor();
 private:
     Ui::Remote *ui;
 };
