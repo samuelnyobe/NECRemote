@@ -567,7 +567,7 @@ border-bottom:2px solid white;</string>
              </font>
             </property>
             <property name="text">
-             <string>SDi 1</string>
+             <string>SDI 1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1216,7 +1216,7 @@ border-bottom:2px solid white;</string>
              </font>
             </property>
             <property name="text">
-             <string>SDi 1</string>
+             <string>SDI 1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
