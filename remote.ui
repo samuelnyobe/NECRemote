@@ -1502,7 +1502,7 @@ border-radius:3px;
 color:white;
 font-weight:bold;
 height:40px;
-cursor: pointer;</string>
+</string>
            </property>
            <property name="text">
             <string>Validate</string>
