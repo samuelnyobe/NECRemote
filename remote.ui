@@ -149,7 +149,7 @@ QCheckBox::indicator:disabled
     <enum>QTabWidget::Triangular</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -618,7 +618,7 @@ border-bottom:2px solid white;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>426</y>
+           <y>434</y>
            <width>351</width>
            <height>41</height>
           </rect>
@@ -827,7 +827,7 @@ border-bottom:2px solid white;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>427</y>
+           <y>435</y>
            <width>351</width>
            <height>41</height>
           </rect>
